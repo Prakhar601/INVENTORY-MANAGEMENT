@@ -1,0 +1,10 @@
+
+The following files have been resolved:
+   org.openjfx:javafx-controls:jar:21.0.2:compile[36m -- module javafx.controlsEmpty[0;1m [auto][m
+   org.openjfx:javafx-fxml:jar:21.0.2:compile[36m -- module javafx.fxmlEmpty[0;1m [auto][m
+   org.openjfx:javafx-graphics:jar:21.0.2:compile[36m -- module javafx.graphicsEmpty[0;1m [auto][m
+   org.xerial:sqlite-jdbc:jar:3.45.1.0:compile[36m -- module org.xerial.sqlitejdbc[m
+   org.mindrot:jbcrypt:jar:0.4:compile[36m -- module jbcrypt[0;1;33m (auto)[m
+   org.junit.jupiter:junit-jupiter:jar:5.10.2:test[36m -- module org.junit.jupiter[m
+   org.mockito:mockito-core:jar:5.11.0:test[36m -- module org.mockito[0;1m [auto][m
+

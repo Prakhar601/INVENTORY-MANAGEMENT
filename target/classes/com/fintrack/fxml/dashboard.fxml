@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import java.lang.String?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.fintrack.controller.DashboardController">
+
+    <stylesheets>
+        <String fx:value="/com/fintrack/css/dashboard.css" />
+    </stylesheets>
+
+    <!-- Sidebar Navigation -->
+    <left>
+        <VBox styleClass="sidebar" prefWidth="250">
+            <Label text="FinTrack" styleClass="sidebar-brand"/>
+            <Button text="Dashboard" onAction="#navDashboard" styleClass="nav-button active" maxWidth="Infinity"/>
+            <Button text="Transactions" onAction="#navTransactions" styleClass="nav-button" maxWidth="Infinity"/>
+            <Button text="Accounts" onAction="#navAccounts" styleClass="nav-button" maxWidth="Infinity"/>
+            <Button text="Budgets" onAction="#navBudgets" styleClass="nav-button" maxWidth="Infinity"/>
+            <Button text="Reports" onAction="#navReports" styleClass="nav-button" maxWidth="Infinity"/>
+            <Region VBox.vgrow="ALWAYS" />
+            <Button text="Settings" onAction="#navSettings" styleClass="nav-button" maxWidth="Infinity"/>
+            <Button text="Logout" onAction="#handleLogout" styleClass="logout-button" maxWidth="Infinity"/>
+        </VBox>
+    </left>
+
+    <!-- Main Content -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox styleClass="main-content" spacing="30">
+                
+                <!-- Header -->
+                <VBox spacing="5">
+                    <Label text="Dashboard" styleClass="h1"/>
+                    <Label fx:id="lblWelcome" text="Loading User Data..." styleClass="h2" style="-fx-text-fill: #6B7280; -fx-font-weight: 500;"/>
+                </VBox>
+
+                <!-- Summary Cards Row -->
+                <HBox spacing="20">
+                    <VBox styleClass="summary-card" HBox.hgrow="ALWAYS">
+                        <Label text="Total Balance" styleClass="summary-title"/>
+                        <Label fx:id="lblTotalBalance" text="--" styleClass="summary-value"/>
+                        <Label fx:id="lblBalanceError" text="Data Error" visible="false" managed="false" style="-fx-text-fill: #EF4444; -fx-font-size: 12px;"/>
+                    </VBox>
+                    
+                    <VBox styleClass="summary-card" HBox.hgrow="ALWAYS">
+                        <Label text="Monthly Income" styleClass="summary-title"/>
+                        <Label fx:id="lblMonthlyIncome" text="--" styleClass="summary-value" style="-fx-text-fill: #10B981;"/>
+                        <Label fx:id="lblIncomeError" text="Data Error" visible="false" managed="false" style="-fx-text-fill: #EF4444; -fx-font-size: 12px;"/>
+                    </VBox>
+                    
+                    <VBox styleClass="summary-card" HBox.hgrow="ALWAYS">
+                        <Label text="Monthly Expense" styleClass="summary-title"/>
+                        <Label fx:id="lblMonthlyExpense" text="--" styleClass="summary-value" style="-fx-text-fill: #EF4444;"/>
+                        <Label fx:id="lblExpenseError" text="Data Error" visible="false" managed="false" style="-fx-text-fill: #EF4444; -fx-font-size: 12px;"/>
+                    </VBox>
+
+                    <VBox styleClass="summary-card" HBox.hgrow="ALWAYS">
+                        <Label text="Net Savings" styleClass="summary-title"/>
+                        <Label fx:id="lblNetSavings" text="--" styleClass="summary-value" style="-fx-text-fill: #4F46E5;"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Charts Row -->
+                <HBox spacing="20" VBox.vgrow="ALWAYS" minHeight="350">
+                    <!-- Bar Chart: Cash Flow -->
+                    <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="10">
+                        <Label text="Cash Flow (Last 6 Months)" styleClass="h2"/>
+                        <Label fx:id="lblBarChartError" text="Failed to load chart" visible="false" managed="false" style="-fx-text-fill: #EF4444;"/>
+                        <BarChart fx:id="barChartCashFlow" VBox.vgrow="ALWAYS" animated="false">
+                            <xAxis>
+                                <CategoryAxis side="BOTTOM" />
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT" />
+                            </yAxis>
+                        </BarChart>
+                    </VBox>
+
+                    <!-- Pie Chart: Spending Breakdown -->
+                    <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="10" minWidth="400">
+                        <Label text="Spending by Category (This Month)" styleClass="h2"/>
+                        <Label fx:id="lblPieChartError" text="Failed to load chart" visible="false" managed="false" style="-fx-text-fill: #EF4444;"/>
+                        <PieChart fx:id="pieChartSpending" VBox.vgrow="ALWAYS" animated="false" legendSide="RIGHT"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Recent Transactions Table -->
+                <VBox styleClass="card" VBox.vgrow="ALWAYS" spacing="15">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Recent Transactions" styleClass="h2"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="View All" onAction="#navTransactions" styleClass="button-secondary"/>
+                    </HBox>
+                    <Label fx:id="lblTableError" text="Failed to load transactions" visible="false" managed="false" style="-fx-text-fill: #EF4444;"/>
+                    <TableView fx:id="tableRecent" VBox.vgrow="ALWAYS" prefHeight="250">
+                        <columns>
+                            <TableColumn fx:id="colDate" text="Date" prefWidth="120"/>
+                            <TableColumn fx:id="colDesc" text="Description" prefWidth="250"/>
+                            <TableColumn fx:id="colCategory" text="Category" prefWidth="150"/>
+                            <TableColumn fx:id="colAmount" text="Amount" prefWidth="150"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

@@ -1,0 +1,113 @@
+/* dashboard.css */
+.sidebar {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: transparent #E5E7EB transparent transparent;
+    -fx-border-width: 1px;
+    -fx-padding: 32px 0;
+}
+
+.sidebar-brand {
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #111827;
+    -fx-padding: 0 24px 40px 24px;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6B7280;
+    -fx-font-size: 15px;
+    -fx-font-weight: 500;
+    -fx-alignment: center-left;
+    -fx-padding: 12px 24px;
+    -fx-cursor: hand;
+    -fx-background-radius: 0;
+}
+
+.nav-button:hover {
+    -fx-background-color: #F9FAFB;
+    -fx-text-fill: #111827;
+}
+
+.nav-button.active {
+    -fx-background-color: #EEF2FF;
+    -fx-text-fill: #4F46E5;
+    -fx-border-color: transparent transparent transparent #4F46E5;
+    -fx-border-width: 0 0 0 4px;
+}
+
+.logout-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #EF4444;
+    -fx-font-size: 15px;
+    -fx-font-weight: 500;
+    -fx-alignment: center-left;
+    -fx-padding: 12px 24px;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: #FEF2F2;
+}
+
+.main-content {
+    -fx-background-color: #F9FAFB;
+    -fx-padding: 40px;
+}
+
+/* Dashboard specific cards */
+.summary-card {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E5E7EB;
+    -fx-border-radius: 16px;
+    -fx-background-radius: 16px;
+    -fx-padding: 24px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 15, 0, 0, 4);
+    -fx-min-width: 250px;
+}
+
+.summary-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #6B7280;
+}
+
+.summary-value {
+    -fx-font-size: 32px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #111827;
+    -fx-padding: 8px 0 0 0;
+}
+
+/* Data Table Override */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #E5E7EB transparent;
+}
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 12px 0;
+}
+.table-view .column-header .label {
+    -fx-text-fill: #6B7280;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-alignment: center-left;
+}
+.table-row-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: transparent transparent #F3F4F6 transparent;
+    -fx-padding: 4px 0;
+}
+.table-row-cell:hover {
+    -fx-background-color: #F9FAFB;
+}
+.table-row-cell:selected {
+    -fx-background-color: #EEF2FF;
+    -fx-text-fill: #111827;
+}

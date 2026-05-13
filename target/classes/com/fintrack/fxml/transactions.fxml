@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import java.lang.String?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.fintrack.controller.TransactionController">
+
+    <stylesheets>
+        <String fx:value="/com/fintrack/css/dashboard.css" />
+    </stylesheets>
+
+    <!-- Sidebar Navigation -->
+    <left>
+        <VBox styleClass="sidebar" prefWidth="250">
+            <Label text="FinTrack" styleClass="sidebar-brand"/>
+            <Button text="Dashboard" onAction="#navDashboard" styleClass="nav-button" maxWidth="1.7976931348623157E308"/>
+            <Button text="Transactions" onAction="#navTransactions" styleClass="nav-button, active" maxWidth="1.7976931348623157E308"/>
+            <Button text="Accounts" onAction="#navAccounts" styleClass="nav-button" maxWidth="1.7976931348623157E308"/>
+            <Button text="Budgets" onAction="#navBudgets" styleClass="nav-button" maxWidth="1.7976931348623157E308"/>
+            <Button text="Reports" onAction="#navReports" styleClass="nav-button" maxWidth="1.7976931348623157E308"/>
+            <Region VBox.vgrow="ALWAYS" />
+            <Button text="Settings" onAction="#navSettings" styleClass="nav-button" maxWidth="1.7976931348623157E308"/>
+            <Button text="Logout" onAction="#handleLogout" styleClass="logout-button" maxWidth="1.7976931348623157E308"/>
+        </VBox>
+    </left>
+
+    <!-- Main Content -->
+    <center>
+        <VBox styleClass="main-content" spacing="24">
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Transactions" styleClass="h1"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="+ Add Transaction" onAction="#handlePrepareAdd" styleClass="button-primary"/>
+            </HBox>
+
+            <!-- Form Card (Hidden by default, shown when adding/editing) -->
+            <VBox fx:id="formCard" styleClass="card" spacing="16" managed="false" visible="false">
+                <Label fx:id="lblFormTitle" text="New Transaction" styleClass="h2"/>
+                
+                <GridPane hgap="16" vgap="16">
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="4" GridPane.hgrow="ALWAYS">
+                        <Label text="Description" styleClass="label"/>
+                        <TextField fx:id="txtDescription" promptText="E.g., Groceries" styleClass="text-field" maxWidth="Infinity"/>
+                    </VBox>
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="4" GridPane.hgrow="ALWAYS">
+                        <Label text="Amount" styleClass="label"/>
+                        <TextField fx:id="txtAmount" promptText="0.00" styleClass="text-field" maxWidth="Infinity"/>
+                    </VBox>
+                    
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="4" GridPane.hgrow="ALWAYS">
+                        <Label text="Type" styleClass="label"/>
+                        <ComboBox fx:id="cmbType" styleClass="text-field" maxWidth="Infinity" onAction="#handleTypeChange"/>
+                    </VBox>
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="4" GridPane.hgrow="ALWAYS">
+                        <Label text="Category" styleClass="label"/>
+                        <ComboBox fx:id="cmbCategory" styleClass="text-field" maxWidth="Infinity"/>
+                    </VBox>
+
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="2" spacing="4" GridPane.hgrow="ALWAYS">
+                        <Label text="Account" styleClass="label"/>
+                        <ComboBox fx:id="cmbAccount" styleClass="text-field" maxWidth="Infinity"/>
+                    </VBox>
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="2" spacing="4" GridPane.hgrow="ALWAYS">
+                        <Label text="Date" styleClass="label"/>
+                        <DatePicker fx:id="dpDate" styleClass="text-field" maxWidth="Infinity"/>
+                    </VBox>
+                </GridPane>
+
+                <HBox spacing="12" alignment="CENTER_RIGHT">
+                    <Button text="Cancel" onAction="#handleCancel" styleClass="button-secondary"/>
+                    <Button text="Save" onAction="#handleSave" styleClass="button-primary"/>
+                </HBox>
+            </VBox>
+
+            <!-- Filters -->
+            <HBox spacing="16" alignment="CENTER_LEFT">
+                <ComboBox fx:id="cmbFilterType" promptText="All Types" styleClass="text-field"/>
+                <ComboBox fx:id="cmbFilterCategory" promptText="All Categories" styleClass="text-field"/>
+                <DatePicker fx:id="dpFilterFrom" promptText="From Date" styleClass="text-field"/>
+                <DatePicker fx:id="dpFilterTo" promptText="To Date" styleClass="text-field"/>
+                <Button text="Filter" onAction="#handleFilter" styleClass="button-secondary"/>
+                <Button text="Clear" onAction="#handleClearFilter" styleClass="button-secondary"/>
+            </HBox>
+
+            <!-- Data Table Card -->
+            <VBox styleClass="card" VBox.vgrow="ALWAYS" spacing="12">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                     <Button text="Edit Selected" onAction="#handlePrepareEdit" styleClass="button-secondary"/>
+                     <Button text="Delete Selected" onAction="#handleDelete" styleClass="button-secondary" style="-fx-text-fill: #EF4444;"/>
+                </HBox>
+
+                <TableView fx:id="tableTransactions" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colDate" text="Date" prefWidth="120"/>
+                        <TableColumn fx:id="colDescription" text="Description" prefWidth="250"/>
+                        <TableColumn fx:id="colAccount" text="Account" prefWidth="150"/>
+                        <TableColumn fx:id="colCategory" text="Category" prefWidth="150"/>
+                        <TableColumn fx:id="colType" text="Type" prefWidth="100"/>
+                        <TableColumn fx:id="colAmount" text="Amount" prefWidth="120"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

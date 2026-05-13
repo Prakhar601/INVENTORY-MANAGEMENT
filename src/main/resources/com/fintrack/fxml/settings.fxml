@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import java.lang.String?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.fintrack.controller.SettingsController">
+
+    <stylesheets>
+        <String fx:value="/com/fintrack/css/dashboard.css" />
+    </stylesheets>
+
+    <!-- Sidebar Navigation -->
+    <left>
+        <VBox styleClass="sidebar" prefWidth="250">
+            <Label text="FinTrack" styleClass="sidebar-brand"/>
+            
+            <Button text="Dashboard" onAction="#navDashboard" styleClass="nav-button" maxWidth="1.7976931348623157E308"/>
+            <Button text="Transactions" onAction="#navTransactions" styleClass="nav-button" maxWidth="1.7976931348623157E308"/>
+            <Button text="Accounts" onAction="#navAccounts" styleClass="nav-button" maxWidth="1.7976931348623157E308"/>
+            <Button text="Budgets" onAction="#navBudgets" styleClass="nav-button" maxWidth="1.7976931348623157E308"/>
+            <Button text="Reports" onAction="#navReports" styleClass="nav-button" maxWidth="1.7976931348623157E308"/>
+            
+            <Region VBox.vgrow="ALWAYS" />
+            
+            <Button text="Settings" onAction="#navSettings" styleClass="nav-button, active" maxWidth="1.7976931348623157E308"/>
+            <Button text="Logout" onAction="#handleLogout" styleClass="logout-button" maxWidth="1.7976931348623157E308"/>
+        </VBox>
+    </left>
+
+    <!-- Main Content -->
+    <center>
+        <VBox styleClass="main-content" spacing="30">
+            <Label text="Settings" styleClass="h1"/>
+            
+            <VBox styleClass="card" VBox.vgrow="ALWAYS">
+                <Label text="Application settings and user profile options." style="-fx-text-fill: #888888;"/>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

@@ -1,0 +1,20 @@
+/* login.css */
+.login-container {
+    -fx-alignment: center;
+    -fx-background-color: #f4f6f9;
+}
+
+.login-card {
+    -fx-background-color: white;
+    -fx-padding: 40px;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 15, 0, 0, 5);
+    -fx-pref-width: 400px;
+}
+
+.title-label {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 0 20px 0;
+}
