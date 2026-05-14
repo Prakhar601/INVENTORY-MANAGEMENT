@@ -1,45 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import java.lang.String?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.fintrack.controller.ReportController">
 
-    <stylesheets>
-        <String fx:value="/com/fintrack/css/dashboard.css" />
-    </stylesheets>
-
     <!-- Sidebar Navigation -->
     <left>
-        <VBox styleClass="sidebar" prefWidth="250">
-            <Label text="FinTrack" styleClass="sidebar-brand"/>
-            
-            <Button text="Dashboard" onAction="#navDashboard" styleClass="nav-button" maxWidth="1.7976931348623157E308"/>
-            <Button text="Transactions" onAction="#navTransactions" styleClass="nav-button" maxWidth="1.7976931348623157E308"/>
-            <Button text="Accounts" onAction="#navAccounts" styleClass="nav-button" maxWidth="1.7976931348623157E308"/>
-            <Button text="Budgets" onAction="#navBudgets" styleClass="nav-button" maxWidth="1.7976931348623157E308"/>
-            <Button text="Reports" onAction="#navReports" styleClass="nav-button, active" maxWidth="1.7976931348623157E308"/>
-            
-            <Region VBox.vgrow="ALWAYS" />
-            
-            <Button text="Settings" onAction="#navSettings" styleClass="nav-button" maxWidth="1.7976931348623157E308"/>
-            <Button text="Logout" onAction="#handleLogout" styleClass="logout-button" maxWidth="1.7976931348623157E308"/>
-        </VBox>
+        <fx:include fx:id="sidebar" source="sidebar.fxml" />
     </left>
 
     <!-- Main Content -->
     <center>
-        <VBox styleClass="main-content" spacing="30">
-            <Label text="Reports" styleClass="h1"/>
-            
-            <VBox styleClass="card" VBox.vgrow="ALWAYS">
-                <Label text="View financial reports and charts here." style="-fx-text-fill: #888888;"/>
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+            <VBox styleClass="analytics-content" spacing="32">
+                
+                <!-- Header -->
+                <HBox alignment="CENTER_LEFT">
+                    <VBox spacing="4">
+                        <Label text="Analytics &amp; Reports" styleClass="h1"/>
+                        <Label text="Deep dive into your financial health" styleClass="text-muted"/>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <!-- Filters and Export -->
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <HBox alignment="CENTER_LEFT" spacing="8" styleClass="card" style="-fx-padding: 4px 12px; -fx-background-radius: 6px;">
+                            <Label text="Period:" styleClass="text-muted"/>
+                            <DatePicker fx:id="dpReportFrom" prefWidth="120"/>
+                            <Label text="to" styleClass="text-muted"/>
+                            <DatePicker fx:id="dpReportTo" prefWidth="120"/>
+                            <Button text="Update" onAction="#handleUpdateReport" styleClass="button-secondary" style="-fx-padding: 4px 12px;"/>
+                        </HBox>
+                        
+                        <Button text="Export CSV" onAction="#handleExportCsv" styleClass="button-secondary">
+                            <graphic><FontIcon iconLiteral="fas-file-csv"/></graphic>
+                        </Button>
+                        <Button text="Export PDF" onAction="#handleExportPdf" styleClass="button-primary">
+                            <graphic><FontIcon iconLiteral="fas-file-pdf"/></graphic>
+                        </Button>
+                    </HBox>
+                </HBox>
+
+                <!-- 1. Summary Widgets Row -->
+                <HBox spacing="24">
+                    <VBox styleClass="analytics-widget" HBox.hgrow="ALWAYS">
+                        <Label text="Avg. Monthly Spending" styleClass="text-muted, label"/>
+                        <Label fx:id="lblAvgSpending" text="--" styleClass="h1" style="-fx-padding: 8px 0;"/>
+                        <Label fx:id="lblAvgSpendingTrend" text="Evaluating data..." styleClass="text-muted" style="-fx-font-size: 12px;"/>
+                    </VBox>
+                    
+                    <VBox styleClass="analytics-widget" HBox.hgrow="ALWAYS">
+                        <Label text="Savings Rate" styleClass="text-muted, label"/>
+                        <Label fx:id="lblSavingsRate" text="--" styleClass="h1" style="-fx-padding: 8px 0;"/>
+                        <Label fx:id="lblSavingsRateTrend" text="Evaluating data..." styleClass="text-muted" style="-fx-font-size: 12px;"/>
+                    </VBox>
+                    
+                    <VBox styleClass="analytics-widget" HBox.hgrow="ALWAYS">
+                        <Label text="Budget Health" styleClass="text-muted, label"/>
+                        <Label fx:id="lblBudgetHealth" text="--" styleClass="h1" style="-fx-padding: 8px 0;"/>
+                        <Label text="Based on current month" styleClass="text-muted" style="-fx-font-size: 12px;"/>
+                    </VBox>
+
+                    <VBox styleClass="analytics-widget" HBox.hgrow="ALWAYS">
+                        <Label text="Top Spending Category" styleClass="text-muted, label"/>
+                        <Label fx:id="lblTopCategory" text="--" styleClass="h2" style="-fx-padding: 8px 0; -fx-font-weight: 700;"/>
+                        <Label fx:id="lblTopCategoryAmount" text="--" styleClass="text-muted" style="-fx-font-size: 12px;"/>
+                    </VBox>
+                </HBox>
+
+                <!-- 2. Main Charts Row -->
+                <HBox spacing="24" VBox.vgrow="ALWAYS" minHeight="350">
+                    <!-- Line Chart: Cash Flow Trend -->
+                    <VBox styleClass="analytics-widget" HBox.hgrow="ALWAYS" spacing="16">
+                        <Label text="Cash Flow Trend (6 Months)" styleClass="h2"/>
+                        <LineChart fx:id="lineChartCashFlow" VBox.vgrow="ALWAYS" animated="true" createSymbols="true">
+                            <xAxis><CategoryAxis side="BOTTOM" /></xAxis>
+                            <yAxis><NumberAxis side="LEFT" /></yAxis>
+                        </LineChart>
+                    </VBox>
+
+                    <!-- Pie Chart: Category Breakdown -->
+                    <VBox styleClass="analytics-widget" prefWidth="380" spacing="16">
+                        <Label text="Spending by Category (This Month)" styleClass="h2"/>
+                        <PieChart fx:id="pieChartCategory" VBox.vgrow="ALWAYS" animated="true" legendSide="BOTTOM" labelsVisible="false"/>
+                        <Label fx:id="lblPieEmpty" text="No spending data available." visible="false" managed="false" styleClass="text-muted" alignment="CENTER" maxWidth="Infinity"/>
+                    </VBox>
+                </HBox>
+
+                <!-- 3. Secondary Charts Row -->
+                <HBox spacing="24" VBox.vgrow="ALWAYS" minHeight="300">
+                    <!-- Bar Chart: Income vs Expense -->
+                    <VBox styleClass="analytics-widget" HBox.hgrow="ALWAYS" spacing="16">
+                        <Label text="Income vs Expense Comparison" styleClass="h2"/>
+                        <BarChart fx:id="barChartComparison" VBox.vgrow="ALWAYS" animated="true" barGap="4" categoryGap="30">
+                            <xAxis><CategoryAxis side="BOTTOM" /></xAxis>
+                            <yAxis><NumberAxis side="LEFT" /></yAxis>
+                        </BarChart>
+                    </VBox>
+
+                    <!-- Budget Progress Tracker -->
+                    <VBox styleClass="analytics-widget" prefWidth="380" spacing="16">
+                        <Label text="Budget Progress" styleClass="h2"/>
+                        <VBox fx:id="vboxBudgets" VBox.vgrow="ALWAYS" spacing="16">
+                            <!-- Populated dynamically via Java -->
+                            <Label fx:id="lblBudgetEmpty" text="No budgets defined." visible="false" managed="false" styleClass="text-muted" alignment="CENTER" maxWidth="Infinity"/>
+                        </VBox>
+                    </VBox>
+                </HBox>
+
             </VBox>
-        </VBox>
+        </ScrollPane>
     </center>
 </BorderPane>

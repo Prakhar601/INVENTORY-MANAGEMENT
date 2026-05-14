@@ -61,7 +61,7 @@ public class AuthService {
         } catch (Exception e) {
             System.err.println("[FATAL-AUTH] Unexpected generic Exception in AuthService:");
             e.printStackTrace(System.err);
-            throw new RuntimeException("Unexpected error during login process.", e);
+            throw new RuntimeException(e);
         }
     }
 

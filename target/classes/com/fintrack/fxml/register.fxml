@@ -11,10 +11,6 @@
 <VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.fintrack.controller.RegisterController"
       styleClass="login-container" alignment="CENTER" fillWidth="false">
-    
-    <stylesheets>
-        <String fx:value="/com/fintrack/css/login.css" />
-    </stylesheets>
 
     <VBox styleClass="login-card" spacing="15" alignment="CENTER">
         <Label text="FinTrack" styleClass="title-label"/>

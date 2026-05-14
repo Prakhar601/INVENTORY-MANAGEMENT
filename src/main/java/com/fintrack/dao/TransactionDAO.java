@@ -22,4 +22,9 @@ public interface TransactionDAO extends BaseDAO<Transaction> {
     double sumByType(int userId, String type, LocalDate from, LocalDate to) throws DatabaseException;
 
     double sumByCategory(int categoryId, LocalDate from, LocalDate to) throws DatabaseException;
+
+    /**
+     * Advanced search and filter with pagination, amount ranges, and dynamic sorting support.
+     */
+    List<Transaction> filterTransactions(int userId, String type, Integer categoryId, LocalDate from, LocalDate to, String keyword, Double minAmount, Double maxAmount, String sortBy, String sortOrder, int offset, int limit) throws DatabaseException;
 }

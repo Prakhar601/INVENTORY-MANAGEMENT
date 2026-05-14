@@ -17,7 +17,7 @@ public final class AlertUtil {
     private AlertUtil() {}
 
     public static void showSuccess(String message) {
-        showAlert(Alert.AlertType.INFORMATION, "Success", message);
+        ToastUtil.showSuccess(message);
     }
 
     public static void showWarning(String message) {
@@ -25,11 +25,11 @@ public final class AlertUtil {
     }
 
     public static void showError(String message) {
-        showAlert(Alert.AlertType.ERROR, "Error", message);
+        ToastUtil.showError(message);
     }
 
     public static void showInfo(String message) {
-        showAlert(Alert.AlertType.INFORMATION, "Information", message);
+        ToastUtil.showInfo(message);
     }
 
     /**

@@ -66,4 +66,8 @@ public class TransactionService {
     public double getTotalExpense(int userId, LocalDate from, LocalDate to) {
         return transactionDAO.sumByType(userId, "EXPENSE", from, to);
     }
+
+    public List<Transaction> filterTransactions(int userId, String type, Integer categoryId, LocalDate from, LocalDate to, String keyword, Double minAmount, Double maxAmount, String sortBy, String sortOrder, int offset, int limit) {
+        return transactionDAO.filterTransactions(userId, type, categoryId, from, to, keyword, minAmount, maxAmount, sortBy, sortOrder, offset, limit);
+    }
 }

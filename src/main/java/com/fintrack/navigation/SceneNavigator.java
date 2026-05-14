@@ -2,10 +2,12 @@ package com.fintrack.navigation;
 
 import com.fintrack.config.AppConfig;
 import com.fintrack.exception.AppException;
+import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -57,44 +59,54 @@ public final class SceneNavigator {
                     
                     Scene newScene = new Scene(root);
 
-                    System.out.println("[DEBUG-NAV] Applying global CSS...");
-                    URL globalCss = SceneNavigator.class.getResource(AppConfig.CSS_BASE_PATH + "global.css");
-                    if (globalCss != null) {
-                        newScene.getStylesheets().add(globalCss.toExternalForm());
-                        System.out.println("[DEBUG-NAV] CSS Applied.");
-                    } else {
-                        System.err.println("[WARN-NAV] global.css not found!");
+                    // Centralized CSS loading — each view gets global.css + its specific sheets
+                    String[] cssFiles = getCssForView(key);
+                    for (String cssFile : cssFiles) {
+                        URL css = SceneNavigator.class.getResource(AppConfig.CSS_BASE_PATH + cssFile);
+                        if (css != null) {
+                            newScene.getStylesheets().add(css.toExternalForm());
+                        } else {
+                            System.err.println("[WARN-NAV] CSS not found: " + cssFile);
+                        }
                     }
+                    System.out.println("[DEBUG-NAV] Applied " + cssFiles.length + " stylesheets.");
+                    
+                    // Apply user's selected theme (Dark/Light)
+                    com.fintrack.util.ThemeManager.applyTheme(newScene);
 
                     return newScene;
 
                 } catch (IOException e) {
                     System.err.println("[FATAL-NAV] FXMLLoader threw IOException!");
-                    e.printStackTrace(System.err);
-                    throw new AppException("Failed to load view (IOException): " + key, e);
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 } catch (RuntimeException e) {
-                    System.err.println("[FATAL-NAV] FXMLLoader threw RuntimeException (Often a Controller/Database crash!)");
-                    System.err.println("Root Cause extraction:");
-                    Throwable cause = e.getCause();
-                    while (cause != null) {
-                        System.err.println("  -> Caused by: " + cause.getClass().getName() + ": " + cause.getMessage());
-                        cause = cause.getCause();
-                    }
-                    e.printStackTrace(System.err);
-                    throw new AppException("Controller initialization crashed loading: " + key, e);
+                    System.err.println("[FATAL-NAV] FXMLLoader threw RuntimeException!");
+                    e.printStackTrace();
+                    throw e;
                 }
             });
 
             System.out.println("[DEBUG-NAV] Switching Stage Scene...");
+            
+            // Apply Fade Transition
+            Parent root = scene.getRoot();
+            root.setOpacity(0);
             primaryStage.setScene(scene);
             primaryStage.show();
+            
+            FadeTransition ft = new FadeTransition(Duration.millis(250), root);
+            ft.setFromValue(0.0);
+            ft.setToValue(1.0);
+            ft.play();
+
             System.out.println("[DEBUG-NAV] Navigation complete.");
             System.out.println("------------------------------------------------\n");
 
-        } catch (Exception e) {
+        } catch (Throwable t) {
             System.err.println("[FATAL-NAV] SceneNavigator caught an exception during navigation execution!");
-            e.printStackTrace(System.err);
-            throw new RuntimeException("CRITICAL: Navigation totally failed for " + fxmlFileName, e);
+            t.printStackTrace();
+            throw new RuntimeException(t);
         }
     }
 
@@ -110,5 +122,22 @@ public final class SceneNavigator {
 
     public static Stage getPrimaryStage() {
         return primaryStage;
+    }
+
+    /**
+     * Maps each FXML view to its required CSS stylesheets.
+     * global.css is always included first.
+     */
+    private static String[] getCssForView(String fxmlFileName) {
+        return switch (fxmlFileName) {
+            case "login.fxml", "register.fxml" -> new String[]{"global.css", "login.css"};
+            case "dashboard.fxml"              -> new String[]{"global.css", "dashboard.css"};
+            case "transactions.fxml"           -> new String[]{"global.css", "dashboard.css"};
+            case "accounts.fxml"               -> new String[]{"global.css", "dashboard.css"};
+            case "budgets.fxml"                -> new String[]{"global.css", "dashboard.css", "analytics.css"};
+            case "reports.fxml"                -> new String[]{"global.css", "analytics.css"};
+            case "settings.fxml"               -> new String[]{"global.css", "dashboard.css"};
+            default                            -> new String[]{"global.css"};
+        };
     }
 }

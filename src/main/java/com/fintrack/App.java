@@ -1,7 +1,9 @@
 package com.fintrack;
 
 import com.fintrack.config.DatabaseConfig;
+import com.fintrack.exception.GlobalExceptionHandler;
 import com.fintrack.navigation.SceneNavigator;
+import com.fintrack.util.LoggerUtil;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -21,8 +23,12 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        // 1. Initialize Logger and Global Exception Handling FIRST
+        LoggerUtil.initialize();
+        Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
+
         try {
-            // 1. Initialize database and run schema migrations
+            // 2. Initialize database and run schema migrations
             DatabaseConfig.initialize();
 
             // 2. Configure primary stage
@@ -44,9 +50,9 @@ public class App extends Application {
                 DatabaseConfig.shutdown();
             });
 
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Failed to start application", e);
-            System.exit(1);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            new GlobalExceptionHandler().uncaughtException(Thread.currentThread(), t);
         }
     }
 

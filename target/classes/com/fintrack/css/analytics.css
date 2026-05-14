@@ -1,0 +1,136 @@
+/* analytics.css */
+
+/* Core Layout */
+.analytics-content {
+    -fx-background-color: -fx-bg-main;
+    -fx-padding: 40px;
+}
+
+/* Base Chart Overrides to remove default JavaFX ugliness */
+.chart {
+    -fx-padding: 10px;
+}
+.chart-content {
+    -fx-background-color: transparent;
+}
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-padding: 10px 0 0 0;
+}
+.chart-legend-item {
+    -fx-text-fill: -fx-text-secondary;
+    -fx-font-size: 12px;
+}
+
+/* Remove borders and ugly grids */
+.chart-vertical-grid-lines {
+    -fx-stroke: transparent;
+}
+.chart-horizontal-grid-lines {
+    -fx-stroke: #E2E8F0; /* Soft Slate 200 */
+    -fx-stroke-dash-array: 5 5;
+}
+.chart-alternative-column-fill {
+    -fx-fill: transparent;
+    -fx-stroke: transparent;
+}
+.chart-alternative-row-fill {
+    -fx-fill: transparent;
+    -fx-stroke: transparent;
+}
+
+/* Axis Styling */
+.axis {
+    -fx-tick-label-fill: -fx-text-secondary;
+    -fx-tick-length: 4;
+}
+.axis:bottom {
+    -fx-border-width: 1 0 0 0;
+    -fx-border-color: #E2E8F0;
+}
+.axis:left {
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+}
+.axis-minor-tick-mark {
+    -fx-stroke: transparent;
+}
+
+/* Cash Flow Line Chart Styling */
+/* Smooth curve simulation by hiding symbols and thickening line */
+.line-chart .chart-series-line {
+    -fx-stroke-width: 3px;
+}
+.line-chart .chart-line-symbol {
+    -fx-background-color: transparent, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 5px;
+    -fx-padding: 4px;
+}
+/* Hover state for symbols */
+.line-chart .chart-line-symbol:hover {
+    -fx-scale-x: 1.5;
+    -fx-scale-y: 1.5;
+}
+
+/* Income vs Expense Bar Chart Styling */
+.bar-chart .chart-bar {
+    -fx-background-radius: 4px 4px 0 0;
+}
+
+/* Palette Overrides (Income vs Expense) */
+.default-color0.chart-bar, .default-color0.chart-line-symbol, .default-color0.chart-series-line {
+    -fx-background-color: #10B981; /* Emerald Income */
+    -fx-stroke: #10B981;
+}
+.default-color1.chart-bar, .default-color1.chart-line-symbol, .default-color1.chart-series-line {
+    -fx-background-color: #EF4444; /* Red Expense */
+    -fx-stroke: #EF4444;
+}
+
+/* Pie Chart Palette (Modern Pastel/Vibrant mix) */
+.default-color0.chart-pie { -fx-pie-color: #3B82F6; } /* Blue */
+.default-color1.chart-pie { -fx-pie-color: #8B5CF6; } /* Violet */
+.default-color2.chart-pie { -fx-pie-color: #F59E0B; } /* Amber */
+.default-color3.chart-pie { -fx-pie-color: #10B981; } /* Emerald */
+.default-color4.chart-pie { -fx-pie-color: #EC4899; } /* Pink */
+.default-color5.chart-pie { -fx-pie-color: #06B6D4; } /* Cyan */
+
+.chart-pie {
+    -fx-border-color: -fx-bg-card;
+    -fx-border-width: 2px;
+}
+
+/* Budget Progress Cards */
+.budget-progress-container {
+    -fx-padding: 8px 0;
+}
+.budget-bar-track {
+    -fx-background-color: #F1F5F9;
+    -fx-background-radius: 4px;
+    -fx-pref-height: 8px;
+    -fx-min-height: 8px;
+}
+.budget-bar-fill {
+    -fx-background-color: #2563EB;
+    -fx-background-radius: 4px;
+    -fx-pref-height: 8px;
+    -fx-min-height: 8px;
+}
+.budget-bar-fill.warning {
+    -fx-background-color: #F59E0B;
+}
+.budget-bar-fill.danger {
+    -fx-background-color: #EF4444;
+}
+
+/* Widget Cards */
+.analytics-widget {
+    -fx-background-color: -fx-bg-card;
+    -fx-background-radius: 12px;
+    -fx-padding: 24px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 15, 0, 0, 4);
+}

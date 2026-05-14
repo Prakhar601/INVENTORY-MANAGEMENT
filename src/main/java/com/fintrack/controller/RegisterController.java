@@ -36,8 +36,8 @@ public class RegisterController {
         } catch (ValidationException e) {
             AlertUtil.showWarning(e.getMessage());
         } catch (Exception e) {
-            AlertUtil.showError("An unexpected error occurred during registration.");
             e.printStackTrace();
+            com.fintrack.util.ErrorDialogUtil.showFriendlyError(e);
         }
     }
 

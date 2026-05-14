@@ -68,8 +68,8 @@ public class LoginController {
             return; // Stop execution here cleanly
         } catch (Exception e) {
             System.err.println("[FATAL-LOGIN] Unexpected Database/System error during AUTHENTICATION.");
-            e.printStackTrace(System.err);
-            AlertUtil.showError("Authentication service failed. Check logs.");
+            e.printStackTrace();
+            com.fintrack.util.ErrorDialogUtil.showFriendlyError(e);
             return; // Stop execution here cleanly
         }
 
@@ -80,8 +80,8 @@ public class LoginController {
             System.out.println("[DEBUG-LOGIN] Navigation executed completely.");
         } catch (Exception e) {
             System.err.println("[FATAL-LOGIN] Navigation Phase Crashed! (The login actually succeeded!)");
-            e.printStackTrace(System.err);
-            AlertUtil.showError("Login successful, but the Dashboard crashed during loading. See console logs.");
+            e.printStackTrace();
+            com.fintrack.util.ErrorDialogUtil.showFriendlyError(e);
         }
     }
 

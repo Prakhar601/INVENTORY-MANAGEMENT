@@ -18,7 +18,17 @@ public final class CurrencyUtil {
     }
 
     public static String formatSimple(double amount) {
-        return AppConfig.DEFAULT_CURRENCY_SYMBOL + String.format("%,.2f", amount);
+        String currencyCode = PreferenceManager.getCurrency();
+        String symbol = "$"; // Default USD
+        switch (currencyCode) {
+            case "EUR": symbol = "€"; break;
+            case "GBP": symbol = "£"; break;
+            case "INR": symbol = "₹"; break;
+            case "JPY": symbol = "¥"; break;
+            case "CAD": symbol = "C$"; break;
+            case "AUD": symbol = "A$"; break;
+        }
+        return symbol + String.format("%,.2f", amount);
     }
 
     public static String toDisplayString(double amount) {

@@ -165,6 +165,62 @@ public class TransactionDAOImpl implements TransactionDAO {
         }
     }
 
+    @Override
+    public List<Transaction> filterTransactions(int userId, String type, Integer categoryId, LocalDate from, LocalDate to, String keyword, Double minAmount, Double maxAmount, String sortBy, String sortOrder, int offset, int limit) throws DatabaseException {
+        StringBuilder sql = new StringBuilder("SELECT * FROM transactions WHERE user_id = ? AND is_deleted = 0");
+        List<Object> params = new ArrayList<>();
+        params.add(userId);
+
+        if (type != null && !type.equals("All")) {
+            sql.append(" AND type = ?");
+            params.add(type);
+        }
+        if (categoryId != null && categoryId > 0) {
+            sql.append(" AND category_id = ?");
+            params.add(categoryId);
+        }
+        if (from != null) {
+            sql.append(" AND transaction_date >= ?");
+            params.add(from.toString());
+        }
+        if (to != null) {
+            sql.append(" AND transaction_date <= ?");
+            params.add(to.toString());
+        }
+        if (minAmount != null) {
+            sql.append(" AND amount >= ?");
+            params.add(minAmount);
+        }
+        if (maxAmount != null) {
+            sql.append(" AND amount <= ?");
+            params.add(maxAmount);
+        }
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append(" AND LOWER(description) LIKE ?");
+            params.add("%" + keyword.trim().toLowerCase() + "%");
+        }
+
+        // Validate sort parameters to prevent SQL injection
+        String validSortBy = "transaction_date";
+        if ("amount".equalsIgnoreCase(sortBy)) {
+            validSortBy = "amount";
+        } else if ("description".equalsIgnoreCase(sortBy)) {
+            validSortBy = "description";
+        }
+        
+        String validSortOrder = "DESC".equalsIgnoreCase(sortOrder) ? "DESC" : "ASC";
+
+        sql.append(" ORDER BY ").append(validSortBy).append(" ").append(validSortOrder).append(", id DESC LIMIT ? OFFSET ?");
+        params.add(limit);
+        params.add(offset);
+
+        return queryList(sql.toString(), ps -> {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+        });
+    }
+
     // ── Helpers ────────────────────────────────────────────────────────
 
     @FunctionalInterface

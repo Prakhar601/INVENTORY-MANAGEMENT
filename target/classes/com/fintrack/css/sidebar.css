@@ -1,0 +1,95 @@
+/* sidebar.css — Premium Dark Sidebar Navigation */
+
+.sidebar {
+    -fx-background-color: #0F172A;
+    -fx-pref-width: 280px;
+    -fx-min-width: 280px;
+    -fx-max-width: 280px;
+    -fx-padding: 32px 16px 24px 16px;
+    -fx-spacing: 4px;
+    -fx-border-color: #1E293B;
+    -fx-border-width: 0 1px 0 0;
+}
+
+/* Brand Header */
+.sidebar-header {
+    -fx-padding: 0 12px 36px 12px;
+}
+
+.sidebar-brand {
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #F8FAFC;
+    -fx-letter-spacing: -0.5px;
+}
+
+.sidebar-brand-icon {
+    -fx-icon-color: #3B82F6;
+    -fx-icon-size: 28px;
+}
+
+.sidebar-section-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #475569;
+    -fx-padding: 20px 16px 8px 16px;
+    -fx-letter-spacing: 1px;
+}
+
+/* Navigation Buttons */
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-alignment: center-left;
+    -fx-padding: 12px 16px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 16px;
+    -fx-pref-width: 248px;
+}
+
+.nav-button > .ikonli-font-icon {
+    -fx-icon-color: #64748B;
+    -fx-icon-size: 16px;
+}
+
+/* Hover */
+.nav-button:hover {
+    -fx-background-color: #1E293B;
+    -fx-text-fill: #E2E8F0;
+}
+.nav-button:hover > .ikonli-font-icon {
+    -fx-icon-color: #E2E8F0;
+}
+
+/* Active / Selected */
+.nav-button.active {
+    -fx-background-color: rgba(59, 130, 246, 0.12);
+    -fx-text-fill: #60A5FA;
+    -fx-font-weight: 600;
+}
+.nav-button.active > .ikonli-font-icon {
+    -fx-icon-color: #60A5FA;
+}
+
+/* Sidebar Spacer */
+.sidebar-spacer {
+    -fx-min-height: 16px;
+}
+
+/* Logout Button */
+.nav-button.logout {
+    -fx-text-fill: #F87171;
+}
+.nav-button.logout > .ikonli-font-icon {
+    -fx-icon-color: #F87171;
+}
+.nav-button.logout:hover {
+    -fx-background-color: rgba(239, 68, 68, 0.1);
+    -fx-text-fill: #FCA5A5;
+}
+.nav-button.logout:hover > .ikonli-font-icon {
+    -fx-icon-color: #FCA5A5;
+}

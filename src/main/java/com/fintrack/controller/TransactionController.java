@@ -10,140 +10,332 @@ import com.fintrack.service.CategoryService;
 import com.fintrack.service.TransactionService;
 import com.fintrack.session.SessionManager;
 import com.fintrack.util.AlertUtil;
+import com.fintrack.util.AsyncUtil;
 import com.fintrack.util.CurrencyUtil;
 import com.fintrack.util.ValidationUtil;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class TransactionController {
 
-    // Form Elements
-    @FXML private VBox formCard;
-    @FXML private Label lblFormTitle;
-    @FXML private TextField txtDescription;
-    @FXML private TextField txtAmount;
-    @FXML private ComboBox<String> cmbType;
-    @FXML private ComboBox<CategoryItem> cmbCategory;
-    @FXML private ComboBox<AccountItem> cmbAccount;
-    @FXML private DatePicker dpDate;
+    @FXML private SidebarController sidebarController;
 
     // Filters
+    @FXML private TextField txtSearch;
     @FXML private ComboBox<String> cmbFilterType;
     @FXML private ComboBox<CategoryItem> cmbFilterCategory;
     @FXML private DatePicker dpFilterFrom;
     @FXML private DatePicker dpFilterTo;
+    @FXML private TextField txtMinAmount;
+    @FXML private TextField txtMaxAmount;
+    @FXML private ComboBox<String> cmbSortBy;
 
     // Table Elements
     @FXML private TableView<Transaction> tableTransactions;
     @FXML private TableColumn<Transaction, String> colDate;
-    @FXML private TableColumn<Transaction, String> colDescription;
-    @FXML private TableColumn<Transaction, String> colAccount;
-    @FXML private TableColumn<Transaction, String> colCategory;
+    @FXML private TableColumn<Transaction, String> colDesc;
     @FXML private TableColumn<Transaction, String> colType;
+    @FXML private TableColumn<Transaction, String> colCategory;
+    @FXML private TableColumn<Transaction, String> colAccount;
     @FXML private TableColumn<Transaction, String> colAmount;
+    @FXML private TableColumn<Transaction, Void> colActions;
 
-    private final TransactionService transactionService;
-    private final AccountService accountService;
-    private final CategoryService categoryService;
+    // Pagination
+    @FXML private Label lblPaginationInfo;
+    @FXML private Button btnPrevPage;
+    @FXML private Button btnNextPage;
+
+    // Form Elements
+    @FXML private VBox formCard;
+    @FXML private Label lblFormTitle;
+    @FXML private ComboBox<String> cmbType;
+    @FXML private TextField txtAmount;
+    @FXML private TextField txtDescription;
+    @FXML private ComboBox<CategoryItem> cmbCategory;
+    @FXML private ComboBox<AccountItem> cmbAccount;
+    @FXML private DatePicker dpDate;
+
+    // Services
+    private TransactionService transactionService;
+    private AccountService accountService;
+    private CategoryService categoryService;
     
     private final ObservableList<Transaction> transactionList = FXCollections.observableArrayList();
     private final Map<Integer, String> accountMap = new HashMap<>();
     private final Map<Integer, String> categoryMap = new HashMap<>();
 
-    private Transaction currentEditTransaction = null;
     private int currentUserId;
+    private Transaction currentEditTransaction = null;
+    
+    // Pagination State
+    private int currentPage = 1;
+    private final int PAGE_SIZE = 15;
 
-    public TransactionController() {
-        this.transactionService = new TransactionService();
-        this.accountService = new AccountService();
-        this.categoryService = new CategoryService();
-    }
+    public TransactionController() {}
 
     @FXML
     public void initialize() {
         currentUserId = SessionManager.getInstance().getCurrentUserId();
         if (currentUserId == -1) {
-            SceneNavigator.navigateTo("login.fxml");
+            Platform.runLater(() -> SceneNavigator.navigateTo("login.fxml"));
+            return;
+        }
+
+        if (sidebarController != null) {
+            sidebarController.setActive("transactions");
+        }
+
+        try {
+            transactionService = new TransactionService();
+            accountService = new AccountService();
+            categoryService = new CategoryService();
+        } catch (Exception e) {
+            e.printStackTrace();
             return;
         }
 
         setupTable();
-        loadDropdownData();
-        loadTransactions();
+        
+        AsyncUtil.runAsync(() -> {
+            loadDropdownDataSync();
+            return null;
+        }, result -> {
+            loadTransactions();
+        }, error -> AlertUtil.showError("Failed to initialize transactions view."));
+    }
+
+    private void setupFilters() {
+        txtSearch.textProperty().addListener((obs, old, newVal) -> {
+            currentPage = 1;
+            loadTransactions();
+        });
+        txtMinAmount.textProperty().addListener((obs, old, newVal) -> {
+            currentPage = 1;
+            loadTransactions();
+        });
+        txtMaxAmount.textProperty().addListener((obs, old, newVal) -> {
+            currentPage = 1;
+            loadTransactions();
+        });
+        
+        cmbFilterType.setOnAction(e -> { currentPage = 1; loadTransactions(); });
+        cmbFilterCategory.setOnAction(e -> { currentPage = 1; loadTransactions(); });
+        dpFilterFrom.setOnAction(e -> { currentPage = 1; loadTransactions(); });
+        dpFilterTo.setOnAction(e -> { currentPage = 1; loadTransactions(); });
+        cmbSortBy.setOnAction(e -> { currentPage = 1; loadTransactions(); });
     }
 
     private void setupTable() {
         colDate.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDate().toString()));
-        colDescription.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDescription()));
-        colType.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getType()));
-        colAmount.setCellValueFactory(data -> new SimpleStringProperty(CurrencyUtil.formatSimple(data.getValue().getAmount())));
+        colDesc.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDescription()));
         
-        colAccount.setCellValueFactory(data -> {
-            String name = accountMap.getOrDefault(data.getValue().getAccountId(), "Unknown");
-            return new SimpleStringProperty(name);
+        colType.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getType()));
+        // Note: You can add CellFactory to colType to render custom styled badges
+        
+        colAmount.setCellValueFactory(data -> {
+            Transaction t = data.getValue();
+            String formatted = CurrencyUtil.formatSimple(t.getAmount());
+            return new SimpleStringProperty(t.getType().equals("EXPENSE") ? "-" + formatted : "+" + formatted);
         });
+        
+        colAccount.setCellValueFactory(data -> 
+            new SimpleStringProperty(accountMap.getOrDefault(data.getValue().getAccountId(), "Unknown"))
+        );
 
-        colCategory.setCellValueFactory(data -> {
-            String name = categoryMap.getOrDefault(data.getValue().getCategoryId(), "None");
-            return new SimpleStringProperty(name);
-        });
+        colCategory.setCellValueFactory(data -> 
+            new SimpleStringProperty(categoryMap.getOrDefault(data.getValue().getCategoryId(), "None"))
+        );
 
+        setupActionColumn();
         tableTransactions.setItems(transactionList);
     }
 
-    private void loadDropdownData() {
-        // Types
-        cmbType.setItems(FXCollections.observableArrayList("EXPENSE", "INCOME", "TRANSFER"));
-        cmbFilterType.setItems(FXCollections.observableArrayList("All", "EXPENSE", "INCOME", "TRANSFER"));
-        cmbFilterType.getSelectionModel().selectFirst();
+    private void setupActionColumn() {
+        colActions.setCellFactory(param -> new TableCell<>() {
+            private final Button btnEdit = new Button();
+            private final Button btnDelete = new Button();
+            private final HBox pane = new HBox(8, btnEdit, btnDelete);
 
-        // Accounts
+            {
+                btnEdit.setGraphic(new FontIcon("fas-pen"));
+                btnEdit.getStyleClass().addAll("action-icon-button", "text-muted");
+                btnEdit.setStyle("-fx-border-width: 0;");
+                btnEdit.setOnAction(event -> handlePrepareEdit(getTableView().getItems().get(getIndex())));
+
+                btnDelete.setGraphic(new FontIcon("fas-trash"));
+                btnDelete.getStyleClass().addAll("action-icon-button", "text-danger");
+                btnDelete.setStyle("-fx-border-width: 0;");
+                btnDelete.setOnAction(event -> handleDelete(getTableView().getItems().get(getIndex())));
+                
+                pane.setAlignment(Pos.CENTER);
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : pane);
+            }
+        });
+    }
+
+    private void loadDropdownDataSync() {
+        // Runs on background thread
         List<Account> accounts = accountService.getAccountsByUser(currentUserId);
-        ObservableList<AccountItem> accountItems = FXCollections.observableArrayList();
-        for (Account a : accounts) {
-            accountMap.put(a.getId(), a.getName());
-            accountItems.add(new AccountItem(a.getId(), a.getName()));
-        }
-        cmbAccount.setItems(accountItems);
-
-        // Categories
         List<Category> categories = categoryService.getCategoriesByUser(currentUserId);
-        ObservableList<CategoryItem> categoryItems = FXCollections.observableArrayList();
-        ObservableList<CategoryItem> filterCatItems = FXCollections.observableArrayList();
-        filterCatItems.add(new CategoryItem(-1, "All Categories"));
+        
+        Platform.runLater(() -> {
+            cmbType.setItems(FXCollections.observableArrayList("EXPENSE", "INCOME", "TRANSFER"));
+            cmbFilterType.setItems(FXCollections.observableArrayList("All", "EXPENSE", "INCOME", "TRANSFER"));
+            cmbFilterType.getSelectionModel().selectFirst();
 
-        for (Category c : categories) {
-            categoryMap.put(c.getId(), c.getName());
-            CategoryItem item = new CategoryItem(c.getId(), c.getName(), c.getType());
-            categoryItems.add(item);
-            filterCatItems.add(item);
-        }
-        cmbCategory.setItems(categoryItems);
-        cmbFilterCategory.setItems(filterCatItems);
-        cmbFilterCategory.getSelectionModel().selectFirst();
+            ObservableList<AccountItem> accountItems = FXCollections.observableArrayList();
+            for (Account a : accounts) {
+                accountMap.put(a.getId(), a.getName());
+                accountItems.add(new AccountItem(a.getId(), a.getName()));
+            }
+            cmbAccount.setItems(accountItems);
+
+            ObservableList<CategoryItem> categoryItems = FXCollections.observableArrayList();
+            ObservableList<CategoryItem> filterCatItems = FXCollections.observableArrayList();
+            filterCatItems.add(new CategoryItem(-1, "All Categories"));
+
+            for (Category c : categories) {
+                categoryMap.put(c.getId(), c.getName());
+                CategoryItem item = new CategoryItem(c.getId(), c.getName(), c.getType());
+                categoryItems.add(item);
+                filterCatItems.add(item);
+            }
+            cmbCategory.setItems(categoryItems);
+            cmbFilterCategory.setItems(filterCatItems);
+            cmbFilterCategory.getSelectionModel().selectFirst();
+
+            cmbSortBy.setItems(FXCollections.observableArrayList(
+                    "Date (Newest First)", 
+                    "Date (Oldest First)", 
+                    "Amount (Highest First)", 
+                    "Amount (Lowest First)",
+                    "Description (A-Z)"
+            ));
+            cmbSortBy.getSelectionModel().selectFirst();
+        });
     }
 
     private void loadTransactions() {
-        transactionList.clear();
-        transactionList.addAll(transactionService.getTransactionsByUser(currentUserId));
+        int offset = (currentPage - 1) * PAGE_SIZE;
+        
+        String type = cmbFilterType.getValue();
+        Integer catId = cmbFilterCategory.getValue() != null && cmbFilterCategory.getValue().id != -1 
+                        ? cmbFilterCategory.getValue().id : null;
+        LocalDate from = dpFilterFrom.getValue();
+        LocalDate to = dpFilterTo.getValue();
+        String keyword = txtSearch.getText();
+
+        Double minAmount = null;
+        if (txtMinAmount.getText() != null && !txtMinAmount.getText().isEmpty()) {
+            try { minAmount = Double.parseDouble(txtMinAmount.getText().trim()); } catch (Exception ignored) {}
+        }
+
+        Double maxAmount = null;
+        if (txtMaxAmount.getText() != null && !txtMaxAmount.getText().isEmpty()) {
+            try { maxAmount = Double.parseDouble(txtMaxAmount.getText().trim()); } catch (Exception ignored) {}
+        }
+
+        String sortSelection = cmbSortBy.getValue();
+        String sortBy = "transaction_date";
+        String sortOrder = "DESC";
+        
+        if (sortSelection != null) {
+            if (sortSelection.contains("Oldest")) sortOrder = "ASC";
+            else if (sortSelection.contains("Amount")) {
+                sortBy = "amount";
+                sortOrder = sortSelection.contains("Highest") ? "DESC" : "ASC";
+            } else if (sortSelection.contains("Description")) {
+                sortBy = "description";
+                sortOrder = "ASC";
+            }
+        }
+
+        // Table visual state indicator
+        tableTransactions.setPlaceholder(new Label("Loading data..."));
+
+        final Double finalMinAmount = minAmount;
+        final Double finalMaxAmount = maxAmount;
+        final String finalSortBy = sortBy;
+        final String finalSortOrder = sortOrder;
+
+        AsyncUtil.runAsync(() -> {
+            // Background Thread Fetch
+            return transactionService.filterTransactions(
+                    currentUserId, type, catId, from, to, keyword, finalMinAmount, finalMaxAmount, finalSortBy, finalSortOrder, offset, PAGE_SIZE + 1
+            );
+        }, filtered -> {
+            // UI Thread Update
+            boolean hasNext = filtered.size() > PAGE_SIZE;
+            if (hasNext) {
+                filtered.remove(filtered.size() - 1);
+            }
+
+            transactionList.setAll(filtered);
+            
+            btnNextPage.setDisable(!hasNext);
+            btnPrevPage.setDisable(currentPage == 1);
+            
+            int startCount = filtered.isEmpty() ? 0 : offset + 1;
+            int endCount = offset + filtered.size();
+            lblPaginationInfo.setText("Showing " + startCount + "-" + endCount);
+            
+            if (filtered.isEmpty()) {
+                tableTransactions.setPlaceholder(new Label("No transactions found."));
+            }
+            
+        }, error -> {
+            System.err.println("[ERROR-TXN] Failed to load transactions.");
+            tableTransactions.setPlaceholder(new Label("Failed to load data."));
+        });
     }
 
-    @FXML
-    private void handleTypeChange() {
+    @FXML private void handlePrevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            loadTransactions();
+        }
+    }
+
+    @FXML private void handleNextPage() {
+        currentPage++;
+        loadTransactions();
+    }
+
+    @FXML private void handleClearFilter() {
+        txtSearch.clear();
+        txtMinAmount.clear();
+        txtMaxAmount.clear();
+        cmbFilterType.getSelectionModel().selectFirst();
+        cmbFilterCategory.getSelectionModel().selectFirst();
+        cmbSortBy.getSelectionModel().selectFirst();
+        dpFilterFrom.setValue(null);
+        dpFilterTo.setValue(null);
+        currentPage = 1;
+        loadTransactions();
+    }
+
+    @FXML private void handleTypeChange() {
         String type = cmbType.getValue();
         if (type != null) {
-            // Filter category dropdown based on selected type
             List<Category> categories = categoryService.getCategoriesByUser(currentUserId);
             ObservableList<CategoryItem> filtered = FXCollections.observableArrayList();
             for (Category c : categories) {
@@ -155,8 +347,7 @@ public class TransactionController {
         }
     }
 
-    @FXML
-    private void handlePrepareAdd() {
+    @FXML private void handlePrepareAdd() {
         currentEditTransaction = null;
         lblFormTitle.setText("New Transaction");
         clearForm();
@@ -164,28 +355,21 @@ public class TransactionController {
         formCard.setManaged(true);
     }
 
-    @FXML
-    private void handlePrepareEdit() {
-        Transaction selected = tableTransactions.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            AlertUtil.showWarning("Please select a transaction to edit.");
-            return;
-        }
-
+    private void handlePrepareEdit(Transaction selected) {
+        if (selected == null) return;
+        
         currentEditTransaction = selected;
         lblFormTitle.setText("Edit Transaction");
         
         txtDescription.setText(selected.getDescription());
         txtAmount.setText(String.valueOf(selected.getAmount()));
         cmbType.setValue(selected.getType());
-        handleTypeChange(); // Filter categories
+        handleTypeChange();
         
-        // Select matching Category
         cmbCategory.getItems().stream()
                 .filter(c -> c.id == selected.getCategoryId())
                 .findFirst().ifPresent(cmbCategory.getSelectionModel()::select);
         
-        // Select matching Account
         cmbAccount.getItems().stream()
                 .filter(a -> a.id == selected.getAccountId())
                 .findFirst().ifPresent(cmbAccount.getSelectionModel()::select);
@@ -196,8 +380,7 @@ public class TransactionController {
         formCard.setManaged(true);
     }
 
-    @FXML
-    private void handleSave() {
+    @FXML private void handleSave() {
         try {
             ValidationUtil.requireNotBlank(txtDescription.getText(), "Description");
             ValidationUtil.requireNotBlank(txtAmount.getText(), "Amount");
@@ -211,20 +394,13 @@ public class TransactionController {
             int catId = cmbCategory.getValue() != null ? cmbCategory.getValue().id : -1;
             
             if (currentEditTransaction == null) {
-                // Add
                 Transaction t = new Transaction(
-                        currentUserId, 
-                        cmbAccount.getValue().id, 
-                        catId, 
-                        amount, 
-                        cmbType.getValue(), 
-                        txtDescription.getText().trim(), 
-                        dpDate.getValue()
+                        currentUserId, cmbAccount.getValue().id, catId, 
+                        amount, cmbType.getValue(), txtDescription.getText().trim(), dpDate.getValue()
                 );
                 transactionService.addTransaction(t);
-                AlertUtil.showSuccess("Transaction added.");
+                AlertUtil.showSuccess("Transaction saved successfully.");
             } else {
-                // Edit
                 currentEditTransaction.setAccountId(cmbAccount.getValue().id);
                 currentEditTransaction.setCategoryId(catId);
                 currentEditTransaction.setAmount(amount);
@@ -237,7 +413,7 @@ public class TransactionController {
             }
 
             handleCancel();
-            handleFilter(); // Reload current view
+            loadTransactions(); 
             
         } catch (NumberFormatException e) {
             AlertUtil.showError("Amount must be a valid number.");
@@ -248,8 +424,7 @@ public class TransactionController {
         }
     }
 
-    @FXML
-    private void handleCancel() {
+    @FXML private void handleCancel() {
         clearForm();
         formCard.setVisible(false);
         formCard.setManaged(false);
@@ -265,66 +440,16 @@ public class TransactionController {
         dpDate.setValue(null);
     }
 
-    @FXML
-    private void handleDelete() {
-        Transaction selected = tableTransactions.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            AlertUtil.showWarning("Please select a transaction to delete.");
-            return;
-        }
-
-        if (AlertUtil.showConfirm("Delete Transaction", "Are you sure you want to delete this transaction?")) {
+    private void handleDelete(Transaction selected) {
+        if (selected == null) return;
+        if (AlertUtil.showConfirm("Delete Transaction", "Are you sure you want to delete this transaction? This will impact your budget balances.")) {
             transactionService.deleteTransaction(selected.getId());
-            handleFilter(); // Reload
+            loadTransactions();
         }
     }
 
-    @FXML
-    private void handleFilter() {
-        List<Transaction> filtered;
-        
-        LocalDate from = dpFilterFrom.getValue();
-        LocalDate to = dpFilterTo.getValue();
-        
-        if (from != null && to != null) {
-            filtered = transactionService.getTransactionsByDateRange(currentUserId, from, to);
-        } else {
-            filtered = transactionService.getTransactionsByUser(currentUserId);
-        }
-
-        String typeFilter = cmbFilterType.getValue();
-        if (typeFilter != null && !typeFilter.equals("All")) {
-            filtered = filtered.stream().filter(t -> t.getType().equals(typeFilter)).collect(Collectors.toList());
-        }
-
-        CategoryItem catFilter = cmbFilterCategory.getValue();
-        if (catFilter != null && catFilter.id != -1) {
-            filtered = filtered.stream().filter(t -> t.getCategoryId() == catFilter.id).collect(Collectors.toList());
-        }
-
-        transactionList.setAll(filtered);
-    }
-
-    @FXML
-    private void handleClearFilter() {
-        cmbFilterType.getSelectionModel().selectFirst();
-        cmbFilterCategory.getSelectionModel().selectFirst();
-        dpFilterFrom.setValue(null);
-        dpFilterTo.setValue(null);
-        loadTransactions();
-    }
-
-    // Navigation Methods
-    @FXML private void navDashboard(ActionEvent event) { SceneNavigator.navigateTo("dashboard.fxml"); }
-    @FXML private void navTransactions(ActionEvent event) { SceneNavigator.navigateTo("transactions.fxml"); }
-    @FXML private void navAccounts(ActionEvent event) { SceneNavigator.navigateTo("accounts.fxml"); }
-    @FXML private void navBudgets(ActionEvent event) { SceneNavigator.navigateTo("budgets.fxml"); }
-    @FXML private void navReports(ActionEvent event) { SceneNavigator.navigateTo("reports.fxml"); }
-    @FXML private void navSettings(ActionEvent event) { SceneNavigator.navigateTo("settings.fxml"); }
-    
-    @FXML 
-    private void handleLogout(ActionEvent event) { 
-        SessionManager.getInstance().logout(); 
+    @FXML private void handleExport(ActionEvent event) {
+        AlertUtil.showSuccess("Export functionality will be enabled soon.");
     }
 
     // Helper Wrappers for ComboBoxes

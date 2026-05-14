@@ -1,0 +1,72 @@
+/* dark-theme.css */
+/* Overrides CSS variables defined in global.css */
+.root {
+    -fx-background-color: #0F172A;
+    -fx-bg-main: #0F172A;
+    -fx-bg-card: #1E293B;
+    
+    -fx-text-primary: #F8FAFC;
+    -fx-text-secondary: #94A3B8;
+    
+    -fx-ft-border: #334155;
+    
+    /* Slightly dim primary colors for eye comfort in dark mode */
+    -fx-primary: #3B82F6;
+    -fx-primary-dark: #2563EB;
+}
+
+/* Fix shadows for dark mode */
+.card, .metric-card, .insight-card {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 15, 0, 0, 4);
+}
+
+.card:hover, .metric-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 20, 0, 0, 8);
+}
+
+/* Adjust Table backgrounds */
+.table-row-cell {
+    -fx-background-color: -fx-bg-card;
+    -fx-border-color: -fx-ft-border;
+}
+.table-row-cell:hover {
+    -fx-background-color: #334155;
+}
+.table-row-cell:selected {
+    -fx-background-color: #1E3A8A; /* Dark blue selection */
+    -fx-text-fill: -fx-text-primary;
+}
+
+/* Fix Text Fields */
+.text-field, .password-field {
+    -fx-background-color: #0F172A;
+    -fx-text-fill: #F8FAFC;
+    -fx-prompt-text-fill: #64748B;
+}
+
+/* Fix Combo Boxes */
+.combo-box {
+    -fx-background-color: #0F172A;
+    -fx-border-color: -fx-ft-border;
+}
+.combo-box-popup .list-view {
+    -fx-background-color: -fx-bg-card;
+}
+.combo-box-popup .list-cell {
+    -fx-text-fill: -fx-text-primary;
+}
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #334155;
+}
+
+/* Fix Date Pickers */
+.date-picker .arrow-button {
+    -fx-background-color: -fx-bg-card;
+}
+.date-picker-popup {
+    -fx-background-color: -fx-bg-card;
+    -fx-border-color: -fx-ft-border;
+}
+.date-picker-popup .month-year-pane {
+    -fx-background-color: #334155;
+}
