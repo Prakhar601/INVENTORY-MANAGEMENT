@@ -89,7 +89,7 @@
                         <VBox spacing="4">
                             <Label text="Starting Balance *" styleClass="label"/>
                             <HBox alignment="CENTER_LEFT" styleClass="text-field" style="-fx-padding: 0 12px;">
-                                <Label text="&#36;" styleClass="text-muted" style="-fx-font-weight: 600;"/>
+                                <Label fx:id="lblCurrencySymbol" text="USD" styleClass="text-muted" style="-fx-font-weight: 600;"/>
                                 <TextField fx:id="txtBalance" promptText="0.00" style="-fx-background-color: transparent; -fx-border-width: 0; -fx-font-size: 16px; -fx-font-weight: 600;" HBox.hgrow="ALWAYS"/>
                             </HBox>
                         </VBox>

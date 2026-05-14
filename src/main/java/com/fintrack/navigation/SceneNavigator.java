@@ -131,12 +131,12 @@ public final class SceneNavigator {
     private static String[] getCssForView(String fxmlFileName) {
         return switch (fxmlFileName) {
             case "login.fxml", "register.fxml" -> new String[]{"global.css", "login.css"};
-            case "dashboard.fxml"              -> new String[]{"global.css", "dashboard.css"};
-            case "transactions.fxml"           -> new String[]{"global.css", "dashboard.css"};
-            case "accounts.fxml"               -> new String[]{"global.css", "dashboard.css"};
-            case "budgets.fxml"                -> new String[]{"global.css", "dashboard.css", "analytics.css"};
-            case "reports.fxml"                -> new String[]{"global.css", "analytics.css"};
-            case "settings.fxml"               -> new String[]{"global.css", "dashboard.css"};
+            case "dashboard.fxml"              -> new String[]{"global.css", "sidebar.css", "dashboard.css"};
+            case "transactions.fxml"           -> new String[]{"global.css", "sidebar.css", "dashboard.css"};
+            case "accounts.fxml"               -> new String[]{"global.css", "sidebar.css", "dashboard.css"};
+            case "budgets.fxml"                -> new String[]{"global.css", "sidebar.css", "dashboard.css", "analytics.css"};
+            case "reports.fxml"                -> new String[]{"global.css", "sidebar.css", "dashboard.css", "analytics.css"};
+            case "settings.fxml"               -> new String[]{"global.css", "sidebar.css", "dashboard.css"};
             default                            -> new String[]{"global.css"};
         };
     }

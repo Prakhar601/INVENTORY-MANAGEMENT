@@ -68,6 +68,7 @@ public class TransactionController {
     @FXML private ComboBox<CategoryItem> cmbCategory;
     @FXML private ComboBox<AccountItem> cmbAccount;
     @FXML private DatePicker dpDate;
+    @FXML private Label lblCurrencySymbol;
 
     // Services
     private TransactionService transactionService;
@@ -109,11 +110,17 @@ public class TransactionController {
         }
 
         setupTable();
+
+        // Set currency symbol safely from Java (not FXML) to avoid expression parsing
+        if (lblCurrencySymbol != null) {
+            lblCurrencySymbol.setText(CurrencyUtil.getSymbol());
+        }
         
         AsyncUtil.runAsync(() -> {
             loadDropdownDataSync();
             return null;
         }, result -> {
+            setupFilters();
             loadTransactions();
         }, error -> AlertUtil.showError("Failed to initialize transactions view."));
     }

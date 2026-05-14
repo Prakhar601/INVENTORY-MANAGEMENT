@@ -55,6 +55,7 @@ public class BudgetController {
     @FXML private ComboBox<String> cmbPeriod;
     @FXML private DatePicker dpStart;
     @FXML private DatePicker dpEnd;
+    @FXML private Label lblCurrencySymbol;
 
     private BudgetService budgetService;
     private CategoryService categoryService;
@@ -88,6 +89,11 @@ public class BudgetController {
         }
 
         setupTable();
+
+        // Set currency symbol safely from Java (not FXML) to avoid expression parsing
+        if (lblCurrencySymbol != null) {
+            lblCurrencySymbol.setText(CurrencyUtil.getSymbol());
+        }
 
         AsyncUtil.runAsync(() -> {
             loadDropdownDataSync();

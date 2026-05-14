@@ -76,9 +76,9 @@
                     <VBox spacing="4">
                         <Label text="Amount Range" styleClass="label, text-muted"/>
                         <HBox spacing="8" alignment="CENTER_LEFT">
-                            <TextField fx:id="txtMinAmount" promptText="Min &#36;" prefWidth="100"/>
+                            <TextField fx:id="txtMinAmount" promptText="Min amount" prefWidth="100"/>
                             <Label text="-" styleClass="text-muted"/>
-                            <TextField fx:id="txtMaxAmount" promptText="Max &#36;" prefWidth="100"/>
+                            <TextField fx:id="txtMaxAmount" promptText="Max amount" prefWidth="100"/>
                         </HBox>
                     </VBox>
 
@@ -149,7 +149,7 @@
                         <VBox spacing="4">
                             <Label text="Amount *" styleClass="label"/>
                             <HBox alignment="CENTER_LEFT" styleClass="text-field" style="-fx-padding: 0 12px;">
-                                <Label text="&#36;" styleClass="text-muted" style="-fx-font-weight: 600;"/>
+                                <Label fx:id="lblCurrencySymbol" text="USD" styleClass="text-muted" style="-fx-font-weight: 600;"/>
                                 <TextField fx:id="txtAmount" promptText="0.00" style="-fx-background-color: transparent; -fx-border-width: 0; -fx-font-size: 16px; -fx-font-weight: 600;" HBox.hgrow="ALWAYS"/>
                             </HBox>
                         </VBox>

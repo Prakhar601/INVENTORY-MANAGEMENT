@@ -5,6 +5,7 @@
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -105,7 +106,7 @@
                     <!-- Bar Chart: Income vs Expense -->
                     <VBox styleClass="analytics-widget" HBox.hgrow="ALWAYS" spacing="16">
                         <Label text="Income vs Expense Comparison" styleClass="h2"/>
-                        <BarChart fx:id="barChartComparison" VBox.vgrow="ALWAYS" animated="true" barGap="4" categoryGap="30">
+                        <BarChart fx:id="barChartCashFlow" VBox.vgrow="ALWAYS" animated="true" barGap="4" categoryGap="30">
                             <xAxis><CategoryAxis side="BOTTOM" /></xAxis>
                             <yAxis><NumberAxis side="LEFT" /></yAxis>
                         </BarChart>
@@ -114,9 +115,15 @@
                     <!-- Budget Progress Tracker -->
                     <VBox styleClass="analytics-widget" prefWidth="380" spacing="16">
                         <Label text="Budget Progress" styleClass="h2"/>
-                        <VBox fx:id="vboxBudgets" VBox.vgrow="ALWAYS" spacing="16">
-                            <!-- Populated dynamically via Java -->
-                            <Label fx:id="lblBudgetEmpty" text="No budgets defined." visible="false" managed="false" styleClass="text-muted" alignment="CENTER" maxWidth="Infinity"/>
+                        <VBox VBox.vgrow="ALWAYS" spacing="16">
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Label text="Active:" styleClass="text-muted"/>
+                                <Label fx:id="lblActiveBudgets" text="0" styleClass="h2"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label text="Exceeded:" styleClass="text-muted"/>
+                                <Label fx:id="lblExceededBudgets" text="0" styleClass="h2"/>
+                            </HBox>
+                            <Label text="Budget health shown above" styleClass="text-muted" alignment="CENTER" maxWidth="Infinity"/>
                         </VBox>
                     </VBox>
                 </HBox>

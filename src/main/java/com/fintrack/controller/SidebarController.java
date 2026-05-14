@@ -89,5 +89,7 @@ public class SidebarController {
     @FXML
     private void handleLogout() {
         SessionManager.getInstance().logout();
+        SceneNavigator.clearCache();
+        SceneNavigator.navigateTo("login.fxml");
     }
 }

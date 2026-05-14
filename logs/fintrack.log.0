@@ -18755,3 +18755,8 @@ java.lang.StackOverflowError
 	at javafx.graphics@21.0.2/javafx.scene.CssStyleHelper.resolveLookups(CssStyleHelper.java:1404)
 	at javafx.graphics@21.0.2/javafx.scene.CssStyleHelper.resolveLookups(CssStyleHelper.java:1404)
 [2026-05-14 23:56:01.329] INFO [com.fintrack.App.stop] - Application stopped.
+[2026-05-14 23:59:30.558] INFO [com.fintrack.util.LoggerUtil.initialize] - Logger initialization complete. System starting up.
+[2026-05-14 23:59:44.373] INFO [com.fintrack.service.AuthService.login] - User authenticated: Prakhar
+[2026-05-14 23:59:44.377] INFO [com.fintrack.session.SessionManager.login] - User logged in: Prakhar
+[2026-05-15 00:07:22.253] INFO [com.fintrack.App.lambda$start$0] - Application shutting down...
+[2026-05-15 00:07:22.275] INFO [com.fintrack.App.stop] - Application stopped.

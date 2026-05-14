@@ -42,6 +42,7 @@ public class AccountController {
     @FXML private TextField txtName;
     @FXML private ComboBox<String> cmbType;
     @FXML private TextField txtBalance;
+    @FXML private Label lblCurrencySymbol;
 
     private AccountService accountService;
     private final ObservableList<Account> accountList = FXCollections.observableArrayList();
@@ -70,6 +71,11 @@ public class AccountController {
         }
 
         setupTable();
+
+        // Set currency symbol safely from Java (not FXML) to avoid expression parsing
+        if (lblCurrencySymbol != null) {
+            lblCurrencySymbol.setText(CurrencyUtil.getSymbol());
+        }
         
         AsyncUtil.runAsync(() -> {
             loadDropdownDataSync();

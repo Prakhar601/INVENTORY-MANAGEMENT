@@ -31,6 +31,23 @@ public final class CurrencyUtil {
         return symbol + String.format("%,.2f", amount);
     }
 
+    /**
+     * Returns the currency symbol for the user's selected currency.
+     * Safe to use in controller code to set Label text at runtime.
+     */
+    public static String getSymbol() {
+        String currencyCode = PreferenceManager.getCurrency();
+        return switch (currencyCode) {
+            case "EUR" -> "\u20AC";
+            case "GBP" -> "\u00A3";
+            case "INR" -> "\u20B9";
+            case "JPY" -> "\u00A5";
+            case "CAD" -> "C$";
+            case "AUD" -> "A$";
+            default -> "$";
+        };
+    }
+
     public static String toDisplayString(double amount) {
         if (amount >= 0) {
             return "+" + formatSimple(amount);
