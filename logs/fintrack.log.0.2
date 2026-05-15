@@ -99,3 +99,62 @@ Caused by: javafx.fxml.LoadException: Missing expression.
 	... 65 more
 [2026-05-15 00:39:04.274] INFO [com.fintrack.App.lambda$start$0] - Application shutting down...
 [2026-05-15 00:39:04.345] INFO [com.fintrack.App.stop] - Application stopped.
+[2026-05-16 00:02:27.688] INFO [com.fintrack.util.LoggerUtil.initialize] - Logger initialization complete. System starting up.
+[2026-05-16 00:02:40.692] INFO [com.fintrack.service.AuthService.login] - User authenticated: Prakhar
+[2026-05-16 00:02:40.694] INFO [com.fintrack.session.SessionManager.login] - User logged in: Prakhar
+[2026-05-16 00:02:51.202] SEVERE [com.fintrack.util.AsyncUtil.lambda$runAsync$1] - [ERROR] Async task failed: Failed to find active budgets.
+com.fintrack.exception.DatabaseException: Failed to find active budgets.
+	at com.fintrack@1.0.0/com.fintrack.dao.impl.BudgetDAOImpl.findActiveBudgets(BudgetDAOImpl.java:134)
+	at com.fintrack@1.0.0/com.fintrack.service.BudgetService.getActiveBudgets(BudgetService.java:36)
+	at com.fintrack@1.0.0/com.fintrack.controller.BudgetController.lambda$loadBudgets$11(BudgetController.java:219)
+	at com.fintrack@1.0.0/com.fintrack.util.AsyncUtil$1.call(AsyncUtil.java:34)
+	at javafx.graphics@21.0.2/javafx.concurrent.Task$TaskCallable.call(Task.java:1399)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (no such column: start_date)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.core.DB.newSQLException(DB.java:1179)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.core.DB.newSQLException(DB.java:1190)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.core.DB.throwex(DB.java:1150)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.core.NativeDB.prepare_utf8(Native Method)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.core.NativeDB.prepare(NativeDB.java:132)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.core.DB.prepare(DB.java:264)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.core.CorePreparedStatement.<init>(CorePreparedStatement.java:46)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.jdbc3.JDBC3PreparedStatement.<init>(JDBC3PreparedStatement.java:32)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.jdbc4.JDBC4PreparedStatement.<init>(JDBC4PreparedStatement.java:25)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.jdbc4.JDBC4Connection.prepareStatement(JDBC4Connection.java:34)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.jdbc3.JDBC3Connection.prepareStatement(JDBC3Connection.java:225)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.jdbc3.JDBC3Connection.prepareStatement(JDBC3Connection.java:205)
+	at com.fintrack@1.0.0/com.fintrack.dao.impl.BudgetDAOImpl.findActiveBudgets(BudgetDAOImpl.java:127)
+	... 10 more
+[2026-05-16 00:03:15.209] SEVERE [com.fintrack.util.AsyncUtil.lambda$runAsync$1] - [ERROR] Async task failed: Failed to find active budgets.
+com.fintrack.exception.DatabaseException: Failed to find active budgets.
+	at com.fintrack@1.0.0/com.fintrack.dao.impl.BudgetDAOImpl.findActiveBudgets(BudgetDAOImpl.java:134)
+	at com.fintrack@1.0.0/com.fintrack.service.BudgetService.getActiveBudgets(BudgetService.java:36)
+	at com.fintrack@1.0.0/com.fintrack.controller.ReportController.lambda$refreshReports$2(ReportController.java:173)
+	at com.fintrack@1.0.0/com.fintrack.util.AsyncUtil$1.call(AsyncUtil.java:34)
+	at javafx.graphics@21.0.2/javafx.concurrent.Task$TaskCallable.call(Task.java:1399)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (no such column: start_date)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.core.DB.newSQLException(DB.java:1179)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.core.DB.newSQLException(DB.java:1190)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.core.DB.throwex(DB.java:1150)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.core.NativeDB.prepare_utf8(Native Method)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.core.NativeDB.prepare(NativeDB.java:132)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.core.DB.prepare(DB.java:264)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.core.CorePreparedStatement.<init>(CorePreparedStatement.java:46)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.jdbc3.JDBC3PreparedStatement.<init>(JDBC3PreparedStatement.java:32)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.jdbc4.JDBC4PreparedStatement.<init>(JDBC4PreparedStatement.java:25)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.jdbc4.JDBC4Connection.prepareStatement(JDBC4Connection.java:34)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.jdbc3.JDBC3Connection.prepareStatement(JDBC3Connection.java:225)
+	at org.xerial.sqlitejdbc@3.45.1.0/org.sqlite.jdbc3.JDBC3Connection.prepareStatement(JDBC3Connection.java:205)
+	at com.fintrack@1.0.0/com.fintrack.dao.impl.BudgetDAOImpl.findActiveBudgets(BudgetDAOImpl.java:127)
+	... 10 more
